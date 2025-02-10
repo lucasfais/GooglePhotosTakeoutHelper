@@ -50,8 +50,8 @@ void main(List<String> arguments) async {
       defaultsTo: 'shortcut',
     )
     ..addOption('divide-to-dates',
-    help: 'Divide output to folders by nothing/year/month/day',
-    allowed: ['0', '1', '2', '3'])
+        help: 'Divide output to folders by nothing/year/month/day',
+        allowed: ['0', '1', '2', '3'])
     ..addFlag('skip-extras', help: 'Skip extra images (like -edited etc)')
     ..addFlag(
       'guess-from-name',

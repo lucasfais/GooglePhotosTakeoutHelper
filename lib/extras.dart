@@ -23,7 +23,7 @@ const extraFormats = [
   '-modifié',
   // ES - @Sappstal report
   '-ha editado',
-    // CA - @Sappstal report
+  // CA - @Sappstal report
   '-editat',
   // Add more "edited" flags in more languages if you want.
   // They need to be lowercase.

@@ -114,7 +114,8 @@ String filesize(int bytes) => ProperFilesize.generateHumanReadableFilesize(
     );
 
 int outputFileCount(List<Media> media, String albumOption) {
-  if (['shortcut', 'duplicate-copy', 'reverse-shortcut'].contains(albumOption)) {
+  if (['shortcut', 'duplicate-copy', 'reverse-shortcut']
+      .contains(albumOption)) {
     return media.fold(0, (prev, e) => prev + e.files.length);
   } else if (albumOption == 'json') {
     return media.length;
@@ -145,14 +146,14 @@ Future<void> renameIncorrectJsonFiles(Directory directory) async {
         r'^(.*\.[a-z0-9]{3,5})\..+\.json$',
         caseSensitive: false,
       );
-      
+
       final match = regex.firstMatch(originalName);
       if (match != null) {
         final newName = '${match.group(1)}.json';
         if (newName != originalName) {
           final newPath = p.join(p.dirname(entity.path), newName);
           final newFile = File(newPath);
-          
+
           // Verify if the file renamed already exists
           if (await newFile.exists()) {
             print('[Renamed] Skipping: $newPath already exists');
