@@ -420,7 +420,9 @@ void main(List<String> arguments) async {
     media,
     output,
     copy: args['copy'],
-    divideToDates: args['divide-to-dates'],
+    divideToDates: args['divide-to-dates'] is num 
+    ? args['divide-to-dates'] 
+    : num.parse(args['divide-to-dates']),
     albumBehavior: args['albums'],
   ).listen((_) => barCopy.increment()).asFuture();
   print('');
