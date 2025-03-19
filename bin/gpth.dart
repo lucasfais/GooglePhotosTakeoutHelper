@@ -66,6 +66,12 @@ void main(List<String> arguments) async {
           "but doesn't break your input folder",
     )
     ..addFlag(
+      'modify-json', 
+      help: 'Delete the "supplemental-metadata" suffix from '
+      '.json files to ensure that script works correctly',
+      defaultsTo: true,
+    )
+    ..addFlag(
       'transform-pixel-mp', 
       help: 'Transform Pixel .MP or .MV extensions to ".mp4"'
     )
@@ -228,7 +234,7 @@ void main(List<String> arguments) async {
   }
   await output.create(recursive: true);
 
-  if (args['modify-json'].toString() == "0") {
+  if (args['modify-json']) {
     print('Fixing JSON files. Removing suffix (this may take some time)...');
     await renameIncorrectJsonFiles(input);
   }
