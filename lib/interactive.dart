@@ -186,7 +186,7 @@ Future<bool> askDivideDates() async {
   }
 }
 
-Future<num> askModifyJson() async {
+Future<bool> askModifyJson() async {
   print(
       'Check if your .json files of your photos contains "supplemental-metadata" '
       'between the original extension and .json. If this suffix is present, '
@@ -201,10 +201,10 @@ Future<num> askModifyJson() async {
     case '1':
     case '':
       print('Will erease the suffix "supplemental-metadata"');
-      return 0;
+      return true;
     case '2':
       print('Will not erease the suffix');
-      return 1;
+      return false;
     default:
       error('Invalid answer - try again');
       return askModifyJson();
