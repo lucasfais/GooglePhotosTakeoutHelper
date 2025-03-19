@@ -51,7 +51,8 @@ void main(List<String> arguments) async {
     )
     ..addOption('divide-to-dates',
         help: 'Divide output to folders by nothing/year/month/day',
-        allowed: ['0', '1', '2', '3'])
+        allowed: ['0', '1', '2', '3'],
+        defaultsTo: '0',)
     ..addFlag('skip-extras', help: 'Skip extra images (like -edited etc)')
     ..addFlag(
       'guess-from-name',
