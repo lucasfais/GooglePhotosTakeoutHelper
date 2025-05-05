@@ -153,14 +153,37 @@ Future<void> renameIncorrectJsonFiles(Directory directory) async {
       final originalName = p.basename(entity.path);
 
       // Regex to dettect pattern
+      // img(18).jpg.supple(18).json
+      // group(1): img
+      // group(2): (18)
+      // group(3): .jpg
+      // -> img.jpg(18).json
+
+      // img.jpg.supple.json
+      // group(1): img
+      // group(2): (null)
+      // group(3): .jpg
+      // -> img.jpg(18).json
+      
+      // img.jpeg.supple.json
+      // group(1): img
+      // group(2): (null)
+      // group(3): .jpeg
+      // -> img.jpeg.json
+
+      // group(1)group(3)group(2).json
+
       final regex = RegExp(
-        r'^(.*\.[a-z0-9]{3,5})\..+\.json$',
+        r'^(.+?)(\(.+\))*(\.[a-z0-9]{3,5})\..+\.json$',
         caseSensitive: false,
       );
 
       final match = regex.firstMatch(originalName);
       if (match != null) {
-        final newName = '${match.group(1)}.json';
+        var newName = '${match.group(1)}.json';
+        if (match.group(2) != null) {
+          newName = '${match.group(1)}${match.group(3)}${match.group(2)}.json';
+        }
         if (newName != originalName) {
           final newPath = p.join(p.dirname(entity.path), newName);
           final newFile = File(newPath);
