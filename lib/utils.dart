@@ -164,13 +164,31 @@ Future<void> renameIncorrectJsonFiles(Directory directory) async {
       group(3) = (1)      
       */
 
+      final goodJsonRegex = RegExp(
+        r'^(.+)\.(.+?)(\(.+?\))*\.json$',
+        caseSensitive: false,
+      );
+
       final regex = RegExp(
-        r'^(.+?)(\.[a-z0-9]{3,5})\.sup.*?(\(.+?\))*\.json$',
+        r'^(.+?)(\.[a-z0-9]{3,5})\..*?(\(.+?\))*\.json$',
         caseSensitive: false,
       );
 
       final match = regex.firstMatch(originalName);
       if (match != null) {
+
+        // let's check if the file is already in the good format
+        final goodJsonMatch = goodJsonRegex.firstMatch(originalName);
+        if (goodJsonMatch != null) {
+          File goodJsonFile = File(p.join(entity.parent.path, '${goodJsonMatch.group(1)}${goodJsonMatch.group(3)}.${goodJsonMatch.group(2)}'));
+          if (await goodJsonFile.exists()) {
+            //print ('[Skipped] ${entity.path} already in good format: ${goodJsonFile.path}');
+            continue;
+          } else {
+            //print ('[NOT Skipped] ${entity.path} not in good format: ${goodJsonFile.path}');
+          }
+        }
+
         var newName = originalName;
         if (match.group(3) == null) {
           newName = '${match.group(1)}${match.group(2)}.json';
@@ -179,6 +197,8 @@ Future<void> renameIncorrectJsonFiles(Directory directory) async {
         }
         
         if (newName != originalName) {
+          // print ('[Renamed] ${entity.path} -> $newName');
+
           final newPath = p.join(p.dirname(entity.path), newName);
           final newFile = File(newPath);
 

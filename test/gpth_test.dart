@@ -48,6 +48,8 @@ AQACEQMRAD8AIcgXf//Z""";
   final jsonFile7 = File('img1.jpg.supplemental-metadata.json');
   final imgFile8 = File('img2(18).jpg');
   final jsonFile8 = File('img2.jpg.supplemental-metadata(18).json');
+  final imgFile9 = File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4');
+  final jsonFile9 = File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4.s.json');
   
   final media = [
     Media({null: imgFile1},
@@ -96,6 +98,7 @@ AQACEQMRAD8AIcgXf//Z""";
         
     imgFile7.writeAsBytesSync([21, 22, 23]);
     imgFile8.writeAsBytesSync([24, 25, 26]);
+    imgFile9.writeAsBytesSync([27, 28, 29]);
 
     writeJson(jsonFile1, 1599078832);
     writeJson(jsonFile2, 1683078832);
@@ -105,6 +108,7 @@ AQACEQMRAD8AIcgXf//Z""";
     writeJson(jsonFile6, 1422183600);
     writeJson(jsonFile7, 1422183601);
     writeJson(jsonFile8, 1422183602);
+    writeJson(jsonFile9, 1422183603);
 
     renameIncorrectJsonFiles(Directory.current);
   });
@@ -161,6 +165,11 @@ AQACEQMRAD8AIcgXf//Z""";
         (await jsonExtractor(imgFile8, tryhard: true))
             ?.millisecondsSinceEpoch,
         1422183602 * 1000,
+      );
+      expect(
+        (await jsonExtractor(imgFile9, tryhard: true))
+            ?.millisecondsSinceEpoch,
+        1422183603 * 1000,
       );
     });
     test('exif', () async {
@@ -430,5 +439,6 @@ AQACEQMRAD8AIcgXf//Z""";
     jsonFile6.deleteSync();
     File('img1.jpg.json').deleteSync();
     File('img2.jpg(18).json').deleteSync();
+    File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4.json').deleteSync();
   });
 }

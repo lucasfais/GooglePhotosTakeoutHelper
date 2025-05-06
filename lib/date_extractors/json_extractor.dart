@@ -31,6 +31,7 @@ Future<DateTime?> jsonExtractor(File file, {bool tryhard = false}) async {
 
 Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
   final dir = Directory(p.dirname(file.path));
+  final files = await dir.list().toList(); // Cache file list
   var name = p.basename(file.path);
   // will try all methods to strip name to find json
   for (final method in [
@@ -49,8 +50,11 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
       _removeDigit, // most files with '(digit)' have jsons, so it's last
     ]
   ]) {
-    final jsonFile = File(p.join(dir.path, '${method(name)}.json'));
-    if (await jsonFile.exists()) return jsonFile;
+    final jsonFileName = '${method(name)}.json';
+    final jsonFile = files.firstWhereOrNull(
+      (f) => f is File && p.basename(f.path) == jsonFileName,
+    );
+    if (jsonFile != null) return File(jsonFile.path);
   }
   return null;
 }
