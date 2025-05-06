@@ -148,6 +148,15 @@ extension Z on String {
 
 Future<void> renameIncorrectJsonFiles(Directory directory) async {
   int renamedCount = 0;
+  final goodJsonRegex = RegExp(
+    r'^(.+)\.(.+?)(\(.+?\))*\.json$',
+    caseSensitive: false,
+  );
+
+  final regex = RegExp(
+    r'^(.+?)(\.[a-z0-9]{3,5})\..*?(\(.+?\))*\.json$',
+    caseSensitive: false,
+  );
   await for (final entity in directory.list(recursive: true)) {
     if (entity is File && p.extension(entity.path) == '.json') {
       final originalName = p.basename(entity.path);
@@ -164,55 +173,54 @@ Future<void> renameIncorrectJsonFiles(Directory directory) async {
       group(3) = (1)      
       */
 
-      final goodJsonRegex = RegExp(
-        r'^(.+)\.(.+?)(\(.+?\))*\.json$',
-        caseSensitive: false,
-      );
+      File? newFile;
+      // most common case - faster processing
+      if (originalName.endsWith(".supplemental-metadata.json")) {
+        // easy solve
+        final newName = originalName.replaceLast('.supplemental-metadata.json', '.json');
+        final newPath = p.join(p.dirname(entity.path), newName);
+        newFile = File(newPath);
+      } else {
 
-      final regex = RegExp(
-        r'^(.+?)(\.[a-z0-9]{3,5})\..*?(\(.+?\))*\.json$',
-        caseSensitive: false,
-      );
-
-      final match = regex.firstMatch(originalName);
-      if (match != null) {
-
-        // let's check if the file is already in the good format
-        final goodJsonMatch = goodJsonRegex.firstMatch(originalName);
-        if (goodJsonMatch != null) {
-          File goodJsonFile = File(p.join(entity.parent.path, '${goodJsonMatch.group(1)}${goodJsonMatch.group(3)}.${goodJsonMatch.group(2)}'));
-          if (await goodJsonFile.exists()) {
-            //print ('[Skipped] ${entity.path} already in good format: ${goodJsonFile.path}');
-            continue;
+        // search for pattern
+        final match = regex.firstMatch(originalName);
+        if (match != null) {
+          var newName = originalName;
+          if (match.group(3) == null) {
+            newName = '${match.group(1)}${match.group(2)}.json';
           } else {
-            //print ('[NOT Skipped] ${entity.path} not in good format: ${goodJsonFile.path}');
+            newName = '${match.group(1)}${match.group(2)}${match.group(3)}.json';
+          }
+          
+          // so, there is something that should be done
+          if (newName != originalName) {
+            // let's check if the file is already in the good format
+            final goodJsonMatch = goodJsonRegex.firstMatch(originalName);
+            if (goodJsonMatch != null) {
+              File goodJsonFile = File(p.join(entity.parent.path, '${goodJsonMatch.group(1)}${goodJsonMatch.group(3)}.${goodJsonMatch.group(2)}'));
+              if (!goodJsonFile.existsSync()) {
+                final newPath = p.join(p.dirname(entity.path), newName);
+                newFile = File(newPath);
+              }
+            } else {
+              final newPath = p.join(p.dirname(entity.path), newName);
+              newFile = File(newPath);
+            }
           }
         }
+      }
 
-        var newName = originalName;
-        if (match.group(3) == null) {
-          newName = '${match.group(1)}${match.group(2)}.json';
+      // Verify if the file renamed already exists
+      if (newFile != null) {
+        if (newFile.existsSync()) {
+          print('[Renamed] Skipping: $newFile already exists');
         } else {
-          newName = '${match.group(1)}${match.group(2)}${match.group(3)}.json';
-        }
-        
-        if (newName != originalName) {
-          // print ('[Renamed] ${entity.path} -> $newName');
-
-          final newPath = p.join(p.dirname(entity.path), newName);
-          final newFile = File(newPath);
-
-          // Verify if the file renamed already exists
-          if (await newFile.exists()) {
-            print('[Renamed] Skipping: $newPath already exists');
-          } else {
-            try {
-              await entity.rename(newPath);
-              renamedCount++;
-              //print('[Renamed] ${entity.path} -> $newPath');
-            } on FileSystemException catch (e) {
-              print('[Error] Renaming ${entity.path}: ${e.message}');
-            }
+          try {
+            await entity.rename(newFile.path);
+            renamedCount++;
+            //print('[Renamed] ${entity.path} -> $newPath');
+          } on FileSystemException catch (e) {
+            print('[Error] Renaming ${entity.path}: ${e.message}');
           }
         }
       }
