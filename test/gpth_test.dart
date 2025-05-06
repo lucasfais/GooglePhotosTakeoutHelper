@@ -51,6 +51,15 @@ AQACEQMRAD8AIcgXf//Z""";
   final imgFile9 = File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4');
   final jsonFile9 = File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4.s.json');
   
+  final imgFile10 = File('IMG001.jpg');
+  final vidFile10 = File('IMG001.mp4');
+  final jsonFile10 = File('IMG001.jpg.json');
+  
+  final imgFile11 = File('IMG002.jpg');
+  final vidFile12 = File('IMG002.mp4');
+  final jsonFile11 = File('IMG002.jpg.json');
+  final jsonFile12 = File('IMG002.mp4.json');
+
   final media = [
     Media({null: imgFile1},
         dateTaken: DateTime(2020, 9, 1), dateTakenAccuracy: 1),
@@ -99,6 +108,10 @@ AQACEQMRAD8AIcgXf//Z""";
     imgFile7.writeAsBytesSync([21, 22, 23]);
     imgFile8.writeAsBytesSync([24, 25, 26]);
     imgFile9.writeAsBytesSync([27, 28, 29]);
+    imgFile10.writeAsBytesSync([30, 31, 32]);
+    vidFile10.writeAsBytesSync([31, 32, 33]);
+    imgFile11.writeAsBytesSync([34, 35, 36]);
+    vidFile12.writeAsBytesSync([37, 38, 39]);
 
     writeJson(jsonFile1, 1599078832);
     writeJson(jsonFile2, 1683078832);
@@ -109,7 +122,9 @@ AQACEQMRAD8AIcgXf//Z""";
     writeJson(jsonFile7, 1422183601);
     writeJson(jsonFile8, 1422183602);
     writeJson(jsonFile9, 1422183603);
-
+    writeJson(jsonFile10, 1422183604);
+    writeJson(jsonFile11, 1422183605);
+    writeJson(jsonFile12, 1422183606);
     renameIncorrectJsonFiles(Directory.current);
   });
 
@@ -170,6 +185,26 @@ AQACEQMRAD8AIcgXf//Z""";
         (await jsonExtractor(imgFile9, tryhard: true))
             ?.millisecondsSinceEpoch,
         1422183603 * 1000,
+      );
+      expect(
+        (await jsonExtractor(imgFile10, tryhard: true))
+            ?.millisecondsSinceEpoch,
+        1422183604 * 1000,
+      );
+      expect(
+        (await jsonExtractor(vidFile10, tryhard: true))
+            ?.millisecondsSinceEpoch,
+        1422183604 * 1000,
+      );
+      expect(
+        (await jsonExtractor(imgFile11, tryhard: true))
+            ?.millisecondsSinceEpoch,
+        1422183605 * 1000,
+      );
+      expect(
+        (await jsonExtractor(vidFile12, tryhard: true))
+            ?.millisecondsSinceEpoch,
+        1422183606 * 1000,
       );
     });
     test('exif', () async {
