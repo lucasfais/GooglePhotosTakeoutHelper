@@ -63,7 +63,14 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
       // found live image
       final realJpgName = p.basename(fileNamesUppercaseMap[jpgName]!.path);
       methods.insert(1, (String s) => realJpgName);
-    }
+    } else {
+      var heicName = "${upperCaseName.substring(0, name.length - 4)}.HEIC";
+      if (fileNamesUppercaseMap.containsKey(heicName)) {
+        // found live image
+        final realHeicName = p.basename(fileNamesUppercaseMap[jpgName]!.path);
+        methods.insert(1, (String s) => realHeicName);
+      }
+    }    
   }
 
   // will try all methods to strip name to find json
