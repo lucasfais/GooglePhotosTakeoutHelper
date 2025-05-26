@@ -33,14 +33,14 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
   final dir = Directory(p.dirname(file.path));
   final files = await dir.list().toList(); // Cache file list
   final fileNamesUppercaseMap = {
-    for (var f in files.whereType<File>())
-      p.basename(f.path).toUpperCase(): f
+    for (var f in files.whereType<File>()) p.basename(f.path).toUpperCase(): f
   };
 
   var name = p.basename(file.path);
   var upperCaseName = name.toUpperCase();
 
-  var methods = [(String s) => s, // direct
+  var methods = [
+    (String s) => s, // direct
     (String s) => s,
     _shortenName,
     // test: combining this with _shortenName?? which way around?
@@ -70,7 +70,7 @@ Future<File?> _jsonForFile(File file, {required bool tryhard}) async {
         final realHeicName = p.basename(fileNamesUppercaseMap[heicName]!.path);
         methods.insert(1, (String s) => realHeicName);
       }
-    }    
+    }
   }
 
   // will try all methods to strip name to find json

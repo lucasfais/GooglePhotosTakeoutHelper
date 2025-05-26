@@ -43,18 +43,18 @@ AQACEQMRAD8AIcgXf//Z""";
   final imgFile6 = File('IMG-20150125-WA0003-modifié.jpg');
   final imgFile6_1 = File('IMG-20150125-WA0003-modifié(1).jpg');
   final jsonFile6 = File('IMG-20150125-WA0003.jpg.json');
-  
+
   final imgFile7 = File('img1.jpg');
   final jsonFile7 = File('img1.jpg.supplemental-metadata.json');
   final imgFile8 = File('img2(18).jpg');
   final jsonFile8 = File('img2.jpg.supplemental-metadata(18).json');
   final imgFile9 = File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4');
   final jsonFile9 = File('video_0_8b087326d8ad465c97f039ec4ef1ab48.mp4.s.json');
-  
+
   final imgFile10 = File('IMG001.jpg');
   final vidFile10 = File('IMG001.mp4');
   final jsonFile10 = File('IMG001.jpg.json');
-  
+
   final imgFile11 = File('IMG002.jpg');
   final vidFile12 = File('IMG002.mp4');
   final jsonFile11 = File('IMG002.jpg.json');
@@ -83,7 +83,8 @@ AQACEQMRAD8AIcgXf//Z""";
   /// We don't worry because we'll delete them later
   setUpAll(() {
     // go to temp dir
-    final d = Directory(join(Directory.systemTemp.path, 'gpth_test${DateTime.now().millisecondsSinceEpoch}'));
+    final d = Directory(join(Directory.systemTemp.path,
+        'gpth_test${DateTime.now().millisecondsSinceEpoch}'));
     d.createSync();
     Directory.current = d;
 
@@ -104,7 +105,7 @@ AQACEQMRAD8AIcgXf//Z""";
     imgFile6_1.writeAsBytesSync([18, 19, 20]);
     writeJson(File file, int time) =>
         file.writeAsStringSync('{"photoTakenTime": {"timestamp": "$time"}}');
-        
+
     imgFile7.writeAsBytesSync([21, 22, 23]);
     imgFile8.writeAsBytesSync([24, 25, 26]);
     imgFile9.writeAsBytesSync([27, 28, 29]);
@@ -172,38 +173,31 @@ AQACEQMRAD8AIcgXf//Z""";
         1422183600 * 1000,
       );
       expect(
-        (await jsonExtractor(imgFile7, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(imgFile7, tryhard: true))?.millisecondsSinceEpoch,
         1422183601 * 1000,
       );
       expect(
-        (await jsonExtractor(imgFile8, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(imgFile8, tryhard: true))?.millisecondsSinceEpoch,
         1422183602 * 1000,
       );
       expect(
-        (await jsonExtractor(imgFile9, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(imgFile9, tryhard: true))?.millisecondsSinceEpoch,
         1422183603 * 1000,
       );
       expect(
-        (await jsonExtractor(imgFile10, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(imgFile10, tryhard: true))?.millisecondsSinceEpoch,
         1422183604 * 1000,
       );
       expect(
-        (await jsonExtractor(vidFile10, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(vidFile10, tryhard: true))?.millisecondsSinceEpoch,
         1422183604 * 1000,
       );
       expect(
-        (await jsonExtractor(imgFile11, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(imgFile11, tryhard: true))?.millisecondsSinceEpoch,
         1422183605 * 1000,
       );
       expect(
-        (await jsonExtractor(vidFile12, tryhard: true))
-            ?.millisecondsSinceEpoch,
+        (await jsonExtractor(vidFile12, tryhard: true))?.millisecondsSinceEpoch,
         1422183606 * 1000,
       );
     });
@@ -352,7 +346,7 @@ AQACEQMRAD8AIcgXf//Z""";
       } else {
         expect(outputted.whereType<Link>().length, 1);
       }
-      
+
       expect(
         outputted.whereType<Directory>().map((e) => basename(e.path)).toSet(),
         {'ALL_PHOTOS', 'Vacation'},
