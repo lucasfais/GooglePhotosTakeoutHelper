@@ -80,6 +80,16 @@ void main(List<String> arguments) async {
       help: "Set creation time equal to the last "
       'modification date at the end of the program.'
       'Only Windows supported'
+    )
+    ..addOption('limit-filesize',
+        help: 'Enforces a maximum size of $maxFileSizeInMB MB per file to create hash for systems with low RAM.',
+        allowed: ['0', '1', '2'],
+        allowedHelp: {
+          '0': 'No limit',
+          '1': 'Use alternate hashing for files > $maxFileSizeInMB MB. May skip moving nearly identical files',
+          '2': 'Skip hashing for files > $maxFileSizeInMB MB. May produce duplicates in shortcut mode',
+        },
+        defaultsTo: '0',
     );
   final args = <String, dynamic>{};
   try {
@@ -136,6 +146,8 @@ void main(List<String> arguments) async {
       args['update-creation-time'] = await interactive.askChangeCreationTime();
       print('');
     }
+    args['limit-filesize'] = await interactive.askIfLimitFileSize();
+    print('');
 
     // @Deprecated('Interactive unzipping is suspended for now!')
     // // calculate approx space required for everything
@@ -152,6 +164,31 @@ void main(List<String> arguments) async {
     // await interactive.unzip(zips, unzipDir);
     // print('');
   }
+  
+  num limitFileSizeOpt;
+  if (args['limit-filesize'] is num ) {
+    limitFileSizeOpt = args['limit-filesize'];
+  }
+  else {
+    limitFileSizeOpt = num.parse(args['limit-filesize']);  }
+  switch (limitFileSizeOpt) {
+    case 0:
+      enforceMaxFileSize = false;
+      alternateHash = false;
+      break;
+    case 1:
+      enforceMaxFileSize = false;
+      alternateHash = true;
+      break;
+    case 2:
+      enforceMaxFileSize = true;
+      alternateHash = false;
+      break;
+    default:
+      enforceMaxFileSize = false;
+      alternateHash = false;
+  }
+
 
   // elastic list of extractors - can add/remove with cli flags
   // those are in order of reliability -

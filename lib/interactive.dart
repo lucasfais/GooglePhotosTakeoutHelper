@@ -314,6 +314,36 @@ Future<bool> askChangeCreationTime() async {
   }
 }
 
+Future<num> askIfLimitFileSize() async {
+  print('If you have large files on low-RAM systems, '
+      'you can limit hashing for files over $maxFileSizeInMB MB. '
+      'Skipping hash generation may lead to duplicate copies in shortcut mode '
+      'but it will prevent crashes on very large files. \nIf you have '
+      'issues try options 1 or 2.');
+  print('Do you want to limit the file size for hash generation?');
+  print('[0] (default) - No limit; hash all files');
+  print('[1] - Alternate hash for >$maxFileSizeInMB MB files; may skip moving nearly identical files (e.g. with only minor mid-file changes)');
+  print('[2] - Skip hashing for files > $maxFileSizeInMB MB; may produce duplicate copies in the output folder in shortcut mode');
+    
+  final answer = await askForInt();
+  switch (answer) {
+    case '0':
+    case '':
+      print('No limit - hashes will be generated for all files');
+      return 0;
+    case '1':
+      print('Will use alternate hashing for files > $maxFileSizeInMB MB');
+      return 1;
+    case '2':
+      print('Will skip hashing for files > $maxFileSizeInMB MB');
+      
+      return 2;
+    default:
+      error('Invalid answer - try again');
+      return askIfLimitFileSize();
+  }
+}
+
 /// Checks free space on disk and notifies user accordingly
 @Deprecated('Interactive unzipping is suspended for now!')
 Future<void> freeSpaceNotice(int required, Directory dir) async {
