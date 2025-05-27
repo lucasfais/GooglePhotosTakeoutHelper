@@ -315,7 +315,7 @@ Future<bool> askChangeCreationTime() async {
 }
 
 Future<num> askIfLimitFileSize() async {
-  print('If you have large fileson low-RAM systems, '
+  print('If you have large files on low-RAM systems, '
       'you can limit hashing for files over $maxFileSizeInMB MB. '
       'Skipping hash generation may lead to duplicate copies in shortcut mode '
       'but it will prevent crashes on very large files. \nIf you have '
