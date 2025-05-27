@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:gpth/utils.dart';
 
@@ -49,9 +51,45 @@ class Media {
 
   /// will be used for finding duplicates/albums
   /// WARNING: Returns same value for files > [maxFileSize]
-  Digest get hash => _hash ??= firstFile.lengthSync() > maxFileSize
-      ? Digest([0])
-      : sha256.convert(firstFile.readAsBytesSync());
+  Digest get hash {
+    if (_hash != null) return _hash!;
+    if (firstFile.lengthSync() > maxFileSize) {
+      if (enforceMaxFileSize) {
+        //if we enforce max file size, we return a hash of 0
+        _hash = Digest(<int>[0]);
+      } else if (alternateHash){
+        //if we use alternate hash, we use quickHash
+        //this is a quick hash that uses only first and last 50% of the file
+        _hash = quickHash(firstFile);
+      } else {
+        //if we don't enforce max file size, we use sha256
+        _hash = sha256.convert(firstFile.readAsBytesSync());
+      }
+    } else {
+      _hash = sha256.convert(firstFile.readAsBytesSync());
+    }
+    return _hash!;
+  }
+  
+  Digest quickHash(File file) {
+      //chunk size is 50% of maxFileSize
+      int chunkSize = maxFileSize ~/2;
+      final raf = file.openSync();
+      final head = raf.readSync(chunkSize);
+      raf.setPositionSync(max(0, file.lengthSync() - chunkSize));
+      final tail = raf.readSync(chunkSize);
+      raf.closeSync();
+
+      // create a sha256 hash from the head and tail
+      // using AccumulatorSink to avoid memory issues with large files
+      final acc = AccumulatorSink<Digest>();
+      final sink = sha256.startChunkedConversion(acc);
+      sink.add(head);
+      sink.add(tail);
+      sink.close();
+
+      return acc.events.single;
+  }     
 
   Media(
     this.files, {
