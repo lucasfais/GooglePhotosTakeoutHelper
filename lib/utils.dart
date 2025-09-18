@@ -17,6 +17,10 @@ const version = '3.4.3';
 
 /// max file size to read for exif/hash/anything
 const maxFileSize = 64 * 1024 * 1024;
+const maxFileSizeInMB = maxFileSize/(1024 * 1024);
+
+bool enforceMaxFileSize = false;
+bool alternateHash = false;
 
 /// convenient print for errors
 void error(Object? object) => stderr.write('$object\n');
